@@ -3,7 +3,8 @@
 <header class="header">
   <div class="container">
     <a href="/" class="logo" id="header-logo-container">
-      <span class="logo-text-wrapper" id="header-logo-text">
+      <img src="/logo.png" alt="Eastern Wave Creations" class="logo-image" id="header-logo-img" style="height: 36px; display: block;" />
+      <span class="logo-text-wrapper" id="header-logo-text" style="display: none;">
         <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
       </span>
     </a>
@@ -24,20 +25,22 @@
 
 <script>
   // Dynamic Logo Loader
-  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
-  if (settings) {
-    const logoContainer = document.getElementById('header-logo-container');
-    const logoText = document.getElementById('header-logo-text');
-    if (logoContainer && logoText) {
-      if (settings.logoType === 'image' && settings.logoUrl) {
-        logoText.style.display = 'none';
-        const img = document.createElement('img');
-        img.src = settings.logoUrl;
-        img.alt = 'Eastern Wave Creations';
-        img.style.height = '36px';
-        img.style.display = 'block';
-        logoContainer.appendChild(img);
-      }
+  const defaultSettings = {
+    logoType: "image",
+    logoUrl: "/logo.png"
+  };
+  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null') || defaultSettings;
+  const logoText = document.getElementById('header-logo-text');
+  const logoImg = document.getElementById('header-logo-img') as HTMLImageElement | null;
+  
+  if (logoText && logoImg) {
+    if (settings.logoType === 'image' && settings.logoUrl) {
+      logoText.style.display = 'none';
+      logoImg.src = settings.logoUrl;
+      logoImg.style.display = 'block';
+    } else {
+      logoText.style.display = 'inline-block';
+      logoImg.style.display = 'none';
     }
   }
 

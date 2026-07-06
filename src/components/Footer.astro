@@ -6,7 +6,8 @@ const year = new Date().getFullYear();
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="/" class="logo" id="footer-logo-container">
-          <span class="logo-text-wrapper" id="footer-logo-text">
+          <img src="/logo.png" alt="Eastern Wave Creations" class="logo-image" id="footer-logo-img" style="height: 32px; display: block;" />
+          <span class="logo-text-wrapper" id="footer-logo-text" style="display: none;">
             <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
           </span>
         </a>
@@ -159,7 +160,15 @@ const year = new Date().getFullYear();
 </style>
 
 <script>
-  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
+  const defaultSettings = {
+    email: "info@easternwavecreations.co.za",
+    phone: "Text 'hello' to test our live flow",
+    tagline: "Engineering modern websites & intelligent WhatsApp communication pipelines.",
+    logoType: "image",
+    logoUrl: "/logo.png"
+  };
+  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null') || defaultSettings;
+  
   if (settings) {
     const taglineEl = document.getElementById('footer-tagline');
     if (taglineEl && settings.tagline) taglineEl.textContent = settings.tagline;
@@ -169,17 +178,17 @@ const year = new Date().getFullYear();
       complianceEl.innerHTML = `Official WhatsApp Business API integration for Eastern Wave Creations operates under the verified display name "Eastern Wave Creations" associated with contact channel: <a href="mailto:${settings.email}">${settings.email}</a>`;
     }
 
-    const logoContainer = document.getElementById('footer-logo-container');
     const logoText = document.getElementById('footer-logo-text');
-    if (logoContainer && logoText) {
+    const logoImg = document.getElementById('footer-logo-img') as HTMLImageElement | null;
+    
+    if (logoText && logoImg) {
       if (settings.logoType === 'image' && settings.logoUrl) {
         logoText.style.display = 'none';
-        const img = document.createElement('img');
-        img.src = settings.logoUrl;
-        img.alt = 'Eastern Wave Creations';
-        img.style.height = '32px';
-        img.style.display = 'block';
-        logoContainer.appendChild(img);
+        logoImg.src = settings.logoUrl;
+        logoImg.style.display = 'block';
+      } else {
+        logoText.style.display = 'inline-block';
+        logoImg.style.display = 'none';
       }
     }
   }
