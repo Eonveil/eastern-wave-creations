@@ -98,6 +98,11 @@
       const data = Object.fromEntries(formData.entries());
       
       try {
+        // Save to localStorage for Webmaster Panel connection
+        const existingBriefs = JSON.parse(localStorage.getItem('ewc_briefs') || '[]');
+        existingBriefs.unshift(data);
+        localStorage.setItem('ewc_briefs', JSON.stringify(existingBriefs));
+
         // Simulated headless backend post
         await new Promise(resolve => setTimeout(resolve, 1500));
         console.log('Sending message to headless handler:', data);
