@@ -16,7 +16,7 @@
             </span>
             <div>
               <h4>Email us directly</h4>
-              <p>info@easternwavecreations.co.za</p>
+              <p id="contact-email-text">info@easternwavecreations.co.za</p>
             </div>
           </div>
           
@@ -26,7 +26,7 @@
             </span>
             <div>
               <h4>WhatsApp Chatbot Demo</h4>
-              <p>Text "hello" to test our live flow</p>
+              <p id="contact-whatsapp-text">Text "hello" to test our live flow</p>
             </div>
           </div>
         </div>
@@ -80,6 +80,15 @@
 </section>
 
 <script>
+  // Load dynamic profile details
+  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
+  if (settings) {
+    const emailEl = document.getElementById('contact-email-text');
+    const waEl = document.getElementById('contact-whatsapp-text');
+    if (settings.email && emailEl) emailEl.textContent = settings.email;
+    if (settings.phone && waEl) waEl.textContent = settings.phone;
+  }
+
   const form = document.getElementById('eastern-contact-form') as HTMLFormElement | null;
   const formPanel = document.getElementById('form-panel');
   const successView = document.getElementById('success-view');

@@ -8,7 +8,7 @@ const year = new Date().getFullYear();
         <a href="/" class="logo">
           <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
         </a>
-        <p class="brand-tagline">Engineering modern websites & intelligent WhatsApp communication pipelines.</p>
+        <p class="brand-tagline" id="footer-tagline">Engineering modern websites & intelligent WhatsApp communication pipelines.</p>
       </div>
       
       <div class="footer-links">
@@ -139,3 +139,11 @@ const year = new Date().getFullYear();
     }
   }
 </style>
+
+<script>
+  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
+  if (settings && settings.tagline) {
+    const taglineEl = document.getElementById('footer-tagline');
+    if (taglineEl) taglineEl.textContent = settings.tagline;
+  }
+</script>
