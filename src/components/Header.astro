@@ -1,0 +1,167 @@
+---
+---
+<header class="header">
+  <div class="container">
+    <a href="#" class="logo">
+      <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
+    </a>
+    
+    <nav class="nav">
+      <a href="#services">Services</a>
+      <a href="#about">Why Headless</a>
+      <a href="#contact" class="btn-contact-nav">Let's Connect</a>
+    </nav>
+    
+    <div class="mobile-toggle" id="mobile-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</header>
+
+<script>
+  const mobileToggle = document.getElementById('mobile-toggle');
+  const nav = document.querySelector('.nav');
+
+  if (mobileToggle && nav) {
+    mobileToggle.addEventListener('click', () => {
+      nav.classList.toggle('active');
+      mobileToggle.classList.toggle('open');
+    });
+    
+    // Close nav on link click
+    nav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        nav.classList.remove('active');
+        mobileToggle.classList.remove('open');
+      });
+    });
+  }
+</script>
+
+<style>
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background: rgba(3, 3, 5, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition-smooth);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .logo-wave {
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logo-accent {
+    font-weight: 400;
+    color: var(--text-secondary);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+  }
+
+  .nav a:hover {
+    color: var(--text-primary);
+  }
+
+  .btn-contact-nav {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 8px 20px;
+    border-radius: 20px;
+  }
+
+  .btn-contact-nav:hover {
+    background: var(--text-primary) !important;
+    color: var(--bg-primary) !important;
+    border-color: var(--text-primary);
+    transform: translateY(-1px);
+  }
+
+  .mobile-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+  }
+
+  .mobile-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--text-primary);
+    transition: var(--transition-smooth);
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .mobile-toggle {
+      display: flex;
+    }
+
+    .nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      flex-direction: column;
+      padding: 40px 24px;
+      gap: 24px;
+      display: none;
+    }
+
+    .nav.active {
+      display: flex;
+    }
+
+    /* Burger Menu Animation */
+    .mobile-toggle.open span:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+    .mobile-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+    .mobile-toggle.open span:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+  }
+</style>

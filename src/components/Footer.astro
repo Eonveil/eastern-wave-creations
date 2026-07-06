@@ -1,0 +1,140 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
+        </a>
+        <p class="brand-tagline">Engineering modern websites & intelligent WhatsApp communication pipelines.</p>
+      </div>
+      
+      <div class="footer-links">
+        <h4>Explore</h4>
+        <nav class="footer-nav">
+          <a href="#services">Services</a>
+          <a href="#about">Why Headless</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+      
+      <div class="footer-legal">
+        <h4>Legal</h4>
+        <nav class="footer-nav">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </nav>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; {year} Eastern Wave Creations. All rights reserved.</p>
+      <p class="built-with">Built headless with Astro &bull; Blazing Speed</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: 80px 24px 40px 24px;
+    border-top: 1px solid var(--border-color);
+    background: rgba(3, 3, 5, 0.8);
+    position: relative;
+    z-index: 2;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .logo-wave {
+    background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logo-accent {
+    font-weight: 400;
+    color: var(--text-secondary);
+  }
+
+  .brand-tagline {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    max-width: 320px;
+  }
+
+  .footer-grid h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+
+  .footer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: var(--transition-smooth);
+  }
+
+  .footer-nav a:hover {
+    color: var(--text-primary);
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 40px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .built-with {
+    font-family: monospace;
+  }
+
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    
+    .footer-bottom {
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+  }
+</style>

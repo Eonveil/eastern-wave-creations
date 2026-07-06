@@ -1,0 +1,202 @@
+---
+---
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-content">
+        <div class="tag">Why We Are Different</div>
+        <h2 class="about-title">Say Goodbye to <span class="text-gradient">Slow, Vulnerable</span> Sites</h2>
+        <p class="about-desc">
+          Most agencies build websites using outdated, bloated platforms (like WordPress) that require constant security updates, database management, and heavy servers. This results in slow load times and vulnerable sites.
+        </p>
+        <p class="about-desc">
+          We do things differently. By implementing a <strong>Headless Architecture</strong>, we separate your frontend from the backend. Your site compiles to pre-rendered HTML/CSS served instantly via global networks (CDNs).
+        </p>
+        
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric-num">100%</span>
+            <span class="metric-label">Pre-rendered HTML</span>
+          </div>
+          <div class="metric">
+            <span class="metric-num">&lt;0.5s</span>
+            <span class="metric-label">Average Load Time</span>
+          </div>
+          <div class="metric">
+            <span class="metric-num">Zero</span>
+            <span class="metric-label">Database Risks</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="about-comparison glass-panel">
+        <h3 class="comp-title">The Architechture Comparison</h3>
+        
+        <div class="comp-item">
+          <div class="comp-header">
+            <span class="comp-label">Legacy WordPress approach</span>
+            <span class="comp-val val-bad">Slow & Heavy</span>
+          </div>
+          <div class="comp-bar-container">
+            <div class="comp-bar bar-legacy" style="width: 85%"></div>
+          </div>
+          <p class="comp-details">Every visitor triggers PHP compiling & database queries. Bloated plugins load unused code.</p>
+        </div>
+        
+        <div class="comp-item">
+          <div class="comp-header">
+            <span class="comp-label">Eastern Wave Headless approach</span>
+            <span class="comp-val val-good">Instant</span>
+          </div>
+          <div class="comp-bar-container">
+            <div class="comp-bar bar-headless" style="width: 15%"></div>
+          </div>
+          <p class="comp-details">Static pre-compiled files serve immediately from edge CDNs. Pure HTML/CSS with zero-bloat JS.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    padding: 120px 24px;
+    background: rgba(12, 13, 20, 0.4);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    z-index: 2;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .tag {
+    color: var(--accent-cyan);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+
+  .about-title {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    margin-bottom: 24px;
+    line-height: 1.2;
+  }
+
+  .about-desc {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  .metrics {
+    display: flex;
+    gap: 32px;
+    margin-top: 40px;
+  }
+
+  .metric {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .metric-num {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: var(--text-primary);
+  }
+
+  .metric-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Comparison Panel Styling */
+  .about-comparison {
+    padding: 40px;
+  }
+
+  .comp-title {
+    font-size: 1.25rem;
+    margin-bottom: 32px;
+    font-weight: 700;
+  }
+
+  .comp-item {
+    margin-bottom: 28px;
+  }
+
+  .comp-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+
+  .comp-label {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .comp-val {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .val-bad {
+    color: #ef4444;
+  }
+
+  .val-good {
+    color: var(--accent-cyan);
+  }
+
+  .comp-bar-container {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .comp-bar {
+    height: 100%;
+    border-radius: 3px;
+  }
+
+  .bar-legacy {
+    background: #ef4444;
+  }
+
+  .bar-headless {
+    background: var(--accent-wave);
+  }
+
+  .comp-details {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 991px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+</style>

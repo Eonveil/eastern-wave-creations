@@ -1,0 +1,46 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = "Eastern Wave Creations - Custom high-performance Websites and WhatsApp Automation. Beautifully designed, blazing fast, built for results." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://easternwavecreations.co.za/" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://easternwavecreations.co.za/" />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+
+		<!-- Google Webmaster Site Verification Placeholder -->
+		<meta name="google-site-verification" content="google-site-verification-placeholder-code" />
+
+		<title>{title}</title>
+	</head>
+	<body>
+		<div class="grid-overlay"></div>
+		<div class="ambient-glow-1"></div>
+		<div class="ambient-glow-2"></div>
+		<div class="ambient-glow-3"></div>
+		
+		<slot />
+	</body>
+</html>
