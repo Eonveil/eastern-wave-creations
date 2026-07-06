@@ -34,6 +34,9 @@ const year = new Date().getFullYear();
       <p>&copy; {year} Eastern Wave Creations. All rights reserved.</p>
       <p class="built-with">Built headless with Astro &bull; Blazing Speed</p>
     </div>
+    <div class="footer-compliance">
+      <p id="footer-compliance-text">Official WhatsApp Business API integration for Eastern Wave Creations operates under the verified display name "Eastern Wave Creations" associated with contact channel: info@easternwavecreations.co.za</p>
+    </div>
   </div>
 </footer>
 
@@ -138,12 +141,30 @@ const year = new Date().getFullYear();
       text-align: center;
     }
   }
+  
+  .footer-compliance {
+    margin-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    padding-top: 16px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .footer-compliance a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+  }
 </style>
 
 <script>
   const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
-  if (settings && settings.tagline) {
+  if (settings) {
     const taglineEl = document.getElementById('footer-tagline');
-    if (taglineEl) taglineEl.textContent = settings.tagline;
+    if (taglineEl && settings.tagline) taglineEl.textContent = settings.tagline;
+    
+    const complianceEl = document.getElementById('footer-compliance-text');
+    if (complianceEl && settings.email) {
+      complianceEl.innerHTML = `Official WhatsApp Business API integration for Eastern Wave Creations operates under the verified display name "Eastern Wave Creations" associated with contact channel: <a href="mailto:${settings.email}">${settings.email}</a>`;
+    }
   }
 </script>

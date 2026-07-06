@@ -1,0 +1,289 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Durban Academy Pilot Case Study | Eastern Wave Creations" description="Case study detailing Eastern Wave Creations' upcoming 3rd term headless website and WhatsApp automation pilot at Durban Academy High School.">
+  <Header />
+  <main class="case-study-container">
+    <article class="glass-panel case-study-content">
+      <div class="case-study-header">
+        <span class="category-tag">Featured Pilot Project</span>
+        <h1 class="case-title">Durban Academy High School: Headless Digital Transformation</h1>
+        <p class="case-meta">Timeline: Launching 3rd Term (July/August 2026) &bull; Client: Durban Academy High School</p>
+      </div>
+
+      <!-- Hero Visual Placeholder / Metaphor -->
+      <div class="case-hero-visual">
+        <div class="visual-accent"></div>
+        <div class="visual-text">
+          <h3>PILOT PROJECT ACTIVE</h3>
+          <p>Deploying Headless School OS & WhatsApp Communication Pipelines</p>
+        </div>
+      </div>
+
+      <section class="case-section">
+        <h2>1. Project Executive Summary</h2>
+        <p>
+          Starting in the 3rd term of 2026, Eastern Wave Creations is launching our premier pilot project with **Durban Academy High School**. The goal of this pilot is to completely digitize school communications and administration, replacing outdated paper-based, slow, and expensive legacy systems with a modern, ultra-fast headless website portal and a WhatsApp Business API automation pipeline.
+        </p>
+      </section>
+
+      <section class="case-section">
+        <h2>2. The Challenge</h2>
+        <p>
+          Durban Academy was facing significant administrative bloat:
+        </p>
+        <ul>
+          <li><strong>Slow Communications:</strong> Reaching parents via bulk SMS was expensive and limited to text. Email newsletters were frequently ignored or got lost in spam folders.</li>
+          <li><strong>Vulnerable & Slow Web Presence:</strong> Traditional content management systems (like WordPress) are heavy, require constant security updates, and run slow, causing frustration when parents try to download crucial school forms or view sports schedules.</li>
+          <li><strong>Manual Inquiry Overload:</strong> School administrators spent hours manually answering repetitive questions over the phone regarding admissions, documents, and sports schedules.</li>
+        </ul>
+      </section>
+
+      <section class="case-section">
+        <h2>3. The Headless Solution by Eastern Wave</h2>
+        <p>
+          We engineered a two-pronged headless architecture to solve these problems:
+        </p>
+        
+        <h3>A. Headless School Operating System Portal</h3>
+        <p>
+          We built a custom school portal using a headless frontend framework (Vite + Vanilla JS and Astro). The frontend contains zero heavy servers or direct database connections. It compiles down to raw, static HTML/CSS files served instantly from global Edge CDNs.
+        </p>
+        <p>
+          <strong>The Result:</strong> Load times under 400ms, and complete immunity to SQL injection or web database hacking. Parents can access admission forms, newsletter PDFs, and dynamic calendars instantly on any mobile device.
+        </p>
+
+        <h3>B. Intelligent WhatsApp Business API Pipeline</h3>
+        <p>
+          To streamline school-to-parent communication, we built an automated WhatsApp chatbot. Parents can simply text the school's verified WhatsApp number to:
+        </p>
+        <ul>
+          <li>Instantly receive the latest school newsletters or sports fixtures.</li>
+          <li>Qualify admissions inquiries automatically, routing hot leads or complex questions to the principal's office.</li>
+          <li>Get real-time emergency notifications or schedule updates.</li>
+        </ul>
+      </section>
+
+      <section class="case-section">
+        <h2>4. Official WhatsApp Integration Details</h2>
+        <p>
+          To maintain transparency and comply with Meta's developer standards, the official WhatsApp API integration details for this project are listed below:
+        </p>
+        <div class="info-box glass-panel">
+          <table class="info-table">
+            <tr>
+              <td><strong>Verified Business Name:</strong></td>
+              <td>Eastern Wave Creations</td>
+            </tr>
+            <tr>
+              <td><strong>WhatsApp Display Name:</strong></td>
+              <td>Eastern Wave Creations</td>
+            </tr>
+            <tr>
+              <td><strong>Integration Purpose:</strong></td>
+              <td>Automated customer onboarding, demo chatbot triggering, and client notifications.</td>
+            </tr>
+            <tr>
+              <td><strong>Official Contact Channel:</strong></td>
+              <td>info@easternwavecreations.co.za</td>
+            </tr>
+          </table>
+        </div>
+      </section>
+      
+      <section class="case-section">
+        <h2>5. Expected Outcomes & Next Steps</h2>
+        <p>
+          As the 3rd term approaches, our development phase is complete. During the pilot, we will measure:
+        </p>
+        <ol>
+          <li>Parent engagement and responsiveness compared to SMS/Email.</li>
+          <li>Reduction in administrative telephone hours.</li>
+          <li>Server load times and performance under high-concurrency traffic (e.g. during school reports release).</li>
+        </ol>
+        <p>
+          This pilot serves as the blueprint for Eastern Wave Creations' expansion into educational technology across South Africa.
+        </p>
+      </section>
+      
+      <div class="action-box">
+        <a href="/#contact" class="btn-primary">Interested in a Pilot for your Institution? Let's Chat</a>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .case-study-container {
+    padding: 140px 24px 80px 24px;
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .case-study-content {
+    padding: 60px;
+  }
+
+  .category-tag {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    color: var(--accent-cyan);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .case-title {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    margin-bottom: 12px;
+    line-height: 1.2;
+    font-weight: 800;
+  }
+
+  .case-meta {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+  }
+
+  /* Visual Element */
+  .case-hero-visual {
+    height: 240px;
+    background: linear-gradient(135deg, rgba(12, 13, 20, 0.9) 0%, rgba(3, 3, 5, 0.95) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 48px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .visual-accent {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, rgba(0,0,0,0) 70%);
+    filter: blur(20px);
+    top: 20%;
+    left: 40%;
+  }
+
+  .visual-text h3 {
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .visual-text p {
+    font-size: 0.95rem;
+    color: var(--accent-cyan);
+    font-family: monospace;
+  }
+
+  /* Content Sections */
+  .case-section {
+    margin-bottom: 48px;
+  }
+
+  .case-section h2 {
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  .case-section h3 {
+    font-size: 1.2rem;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  .case-section p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .case-section ul, .case-section ol {
+    margin-left: 24px;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+  }
+
+  .case-section li {
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+
+  .case-section strong {
+    color: var(--text-primary);
+  }
+
+  /* Info Box */
+  .info-box {
+    padding: 24px;
+    margin-top: 20px;
+  }
+
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .info-table td {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .info-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .info-table td:first-child {
+    color: var(--text-secondary);
+    width: 240px;
+  }
+
+  .info-table td:last-child {
+    color: var(--text-primary);
+    font-family: monospace;
+  }
+
+  .action-box {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  @media (max-width: 768px) {
+    .case-study-content {
+      padding: 32px 24px;
+    }
+    
+    .info-table td {
+      display: block;
+      width: 100% !important;
+      padding: 6px 0;
+    }
+  }
+</style>
