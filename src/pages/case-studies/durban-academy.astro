@@ -88,7 +88,7 @@ import Footer from '../../components/Footer.astro';
             </tr>
             <tr>
               <td><strong>Official Contact Channel:</strong></td>
-              <td>info@easternwavecreations.co.za</td>
+              <td><span id="case-email-text">info@easternwavecreations.co.za</span></td>
             </tr>
           </table>
         </div>
@@ -287,3 +287,11 @@ import Footer from '../../components/Footer.astro';
     }
   }
 </style>
+
+<script>
+  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
+  if (settings && settings.email) {
+    const emailEl = document.getElementById('case-email-text');
+    if (emailEl) emailEl.textContent = settings.email;
+  }
+</script>

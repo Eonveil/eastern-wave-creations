@@ -90,7 +90,7 @@ import Footer from '../components/Footer.astro';
       <section class="privacy-section">
         <h2>8. Contact Us</h2>
         <p>If you have questions or comments about this Privacy Policy, please contact us at:</p>
-        <p class="contact-email"><strong>Email:</strong> info@easternwavecreations.co.za</p>
+        <p class="contact-email"><strong>Email:</strong> <span id="privacy-email-text">info@easternwavecreations.co.za</span></p>
       </section>
     </div>
   </main>
@@ -182,3 +182,11 @@ import Footer from '../components/Footer.astro';
     }
   }
 </style>
+
+<script>
+  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
+  if (settings && settings.email) {
+    const emailEl = document.getElementById('privacy-email-text');
+    if (emailEl) emailEl.textContent = settings.email;
+  }
+</script>
