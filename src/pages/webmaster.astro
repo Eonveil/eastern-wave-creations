@@ -144,21 +144,7 @@ import Footer from '../components/Footer.astro';
                   <input type="text" id="p-phone" required style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; color: var(--text-primary); font-size: 0.95rem; outline: none;" />
                 </div>
               </div>
-              
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 8px;">
-                <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
-                  <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Logo Type</label>
-                  <select id="p-logo-type" required style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; color: var(--text-primary); font-size: 0.95rem; outline: none; cursor: pointer;">
-                    <option value="image">Custom Image Logo</option>
-                    <option value="text">Default Text Logo</option>
-                  </select>
-                </div>
-                
-                <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
-                  <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Logo Image Path / URL</label>
-                  <input type="text" id="p-logo-url" required style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; color: var(--text-primary); font-size: 0.95rem; outline: none;" />
-                </div>
-              </div>
+
               
               <div class="form-group" style="display: flex; flex-direction: column; gap: 8px;">
                 <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Homepage Tagline / Branding Description</label>
@@ -268,9 +254,7 @@ import Footer from '../components/Footer.astro';
   const defaultSettings = {
     email: "info@easternwavecreations.co.za",
     phone: "Text 'hello' to test our live flow",
-    tagline: "Engineering modern websites & intelligent WhatsApp communication pipelines.",
-    logoType: "image",
-    logoUrl: "/logo.png"
+    tagline: "Engineering modern websites & intelligent WhatsApp communication pipelines."
   };
 
   const settingsForm = document.getElementById('profile-settings-form');
@@ -283,36 +267,23 @@ import Footer from '../components/Footer.astro';
     localStorage.setItem('ewc_settings', JSON.stringify(settings));
   }
 
-  // If migration needed (adding logo fields to existing config)
-  if (settings && (settings.logoType === undefined || settings.logoUrl === undefined)) {
-    settings.logoType = settings.logoType || defaultSettings.logoType;
-    settings.logoUrl = settings.logoUrl || defaultSettings.logoUrl;
-    localStorage.setItem('ewc_settings', JSON.stringify(settings));
-  }
-
   const pEmail = document.getElementById('p-email') as HTMLInputElement | null;
   const pPhone = document.getElementById('p-phone') as HTMLInputElement | null;
   const pTagline = document.getElementById('p-tagline') as HTMLTextAreaElement | null;
-  const pLogoType = document.getElementById('p-logo-type') as HTMLSelectElement | null;
-  const pLogoUrl = document.getElementById('p-logo-url') as HTMLInputElement | null;
 
-  if (pEmail && pPhone && pTagline && pLogoType && pLogoUrl) {
+  if (pEmail && pPhone && pTagline) {
     pEmail.value = settings.email;
     pPhone.value = settings.phone;
     pTagline.value = settings.tagline;
-    pLogoType.value = settings.logoType;
-    pLogoUrl.value = settings.logoUrl;
   }
 
-  if (settingsForm && saveSuccessMsg && pEmail && pPhone && pTagline && pLogoType && pLogoUrl) {
+  if (settingsForm && saveSuccessMsg && pEmail && pPhone && pTagline) {
     settingsForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const updatedSettings = {
         email: pEmail.value,
         phone: pPhone.value,
-        tagline: pTagline.value,
-        logoType: pLogoType.value,
-        logoUrl: pLogoUrl.value
+        tagline: pTagline.value
       };
       localStorage.setItem('ewc_settings', JSON.stringify(updatedSettings));
       

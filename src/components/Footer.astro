@@ -5,11 +5,8 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="logo" id="footer-logo-container">
-          <img src="/logo.png" alt="Eastern Wave Creations" class="logo-image" id="footer-logo-img" style="height: 32px; display: block;" />
-          <span class="logo-text-wrapper" id="footer-logo-text" style="display: block;">
-            <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
-          </span>
+        <a href="/" class="logo">
+          <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
         </a>
         <p class="brand-tagline" id="footer-tagline">Engineering modern websites & intelligent WhatsApp communication pipelines.</p>
       </div>
@@ -71,9 +68,7 @@ const year = new Date().getFullYear();
     color: var(--text-primary);
     text-decoration: none;
     letter-spacing: -0.02em;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    display: inline-block;
     margin-bottom: 16px;
   }
 
@@ -162,14 +157,7 @@ const year = new Date().getFullYear();
 </style>
 
 <script>
-  const defaultSettings = {
-    email: "info@easternwavecreations.co.za",
-    phone: "Text 'hello' to test our live flow",
-    tagline: "Engineering modern websites & intelligent WhatsApp communication pipelines.",
-    logoType: "image",
-    logoUrl: "/logo.png"
-  };
-  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null') || defaultSettings;
+  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
   
   if (settings) {
     const taglineEl = document.getElementById('footer-tagline');
@@ -178,20 +166,6 @@ const year = new Date().getFullYear();
     const complianceEl = document.getElementById('footer-compliance-text');
     if (complianceEl && settings.email) {
       complianceEl.innerHTML = `Official WhatsApp Business API integration for Eastern Wave Creations operates under the verified display name "Eastern Wave Creations" associated with contact channel: <a href="mailto:${settings.email}">${settings.email}</a>`;
-    }
-
-    const logoText = document.getElementById('footer-logo-text');
-    const logoImg = document.getElementById('footer-logo-img') as HTMLImageElement | null;
-    
-    if (logoText && logoImg) {
-      if (settings.logoType === 'image' && settings.logoUrl) {
-        logoText.style.display = 'block';
-        logoImg.src = settings.logoUrl;
-        logoImg.style.display = 'block';
-      } else {
-        logoText.style.display = 'block';
-        logoImg.style.display = 'none';
-      }
     }
   }
 </script>

@@ -2,11 +2,8 @@
 ---
 <header class="header">
   <div class="container">
-    <a href="/" class="logo" id="header-logo-container">
-      <img src="/logo.png" alt="Eastern Wave Creations" class="logo-image" id="header-logo-img" style="height: 36px; display: block;" />
-      <span class="logo-text-wrapper" id="header-logo-text" style="display: block;">
-        <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
-      </span>
+    <a href="/" class="logo">
+      <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
     </a>
     
     <nav class="nav">
@@ -24,25 +21,6 @@
 </header>
 
 <script>
-  // Dynamic Logo Loader
-  const defaultSettings = {
-    logoType: "image",
-    logoUrl: "/logo.png"
-  };
-  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null') || defaultSettings;
-  const logoText = document.getElementById('header-logo-text');
-  const logoImg = document.getElementById('header-logo-img') as HTMLImageElement | null;
-  
-  if (logoText && logoImg) {
-    if (settings.logoType === 'image' && settings.logoUrl) {
-      logoText.style.display = 'block';
-      logoImg.src = settings.logoUrl;
-      logoImg.style.display = 'block';
-    } else {
-      logoText.style.display = 'block';
-      logoImg.style.display = 'none';
-    }
-  }
 
   const mobileToggle = document.getElementById('mobile-toggle');
   const nav = document.querySelector('.nav');
@@ -93,9 +71,6 @@
     color: var(--text-primary);
     text-decoration: none;
     letter-spacing: -0.02em;
-    display: flex;
-    align-items: center;
-    gap: 12px;
   }
 
   .logo-wave {
