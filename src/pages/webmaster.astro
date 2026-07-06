@@ -529,10 +529,15 @@ import Footer from '../components/Footer.astro';
     margin-bottom: 4px;
   }
 
-  .brief-header a {
+  .brief-header a, .brief-header a:visited {
     color: var(--accent-cyan);
     text-decoration: none;
     font-size: 0.85rem;
+  }
+
+  .brief-header a:hover {
+    color: #0ea5e9;
+    text-decoration: underline;
   }
 
   .brief-body p {
