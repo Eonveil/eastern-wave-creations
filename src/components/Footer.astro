@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
       <div class="footer-brand">
         <a href="/" class="logo" id="footer-logo-container">
           <img src="/logo.png" alt="Eastern Wave Creations" class="logo-image" id="footer-logo-img" style="height: 32px; display: block;" />
-          <span class="logo-text-wrapper" id="footer-logo-text" style="display: none;">
+          <span class="logo-text-wrapper" id="footer-logo-text" style="display: block;">
             <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
           </span>
         </a>
@@ -71,7 +71,9 @@ const year = new Date().getFullYear();
     color: var(--text-primary);
     text-decoration: none;
     letter-spacing: -0.02em;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 16px;
   }
 
@@ -183,11 +185,11 @@ const year = new Date().getFullYear();
     
     if (logoText && logoImg) {
       if (settings.logoType === 'image' && settings.logoUrl) {
-        logoText.style.display = 'none';
+        logoText.style.display = 'block';
         logoImg.src = settings.logoUrl;
         logoImg.style.display = 'block';
       } else {
-        logoText.style.display = 'inline-block';
+        logoText.style.display = 'block';
         logoImg.style.display = 'none';
       }
     }
