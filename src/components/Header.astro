@@ -2,8 +2,10 @@
 ---
 <header class="header">
   <div class="container">
-    <a href="/" class="logo">
-      <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
+    <a href="/" class="logo" id="header-logo-container">
+      <span class="logo-text-wrapper" id="header-logo-text">
+        <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
+      </span>
     </a>
     
     <nav class="nav">
@@ -21,6 +23,24 @@
 </header>
 
 <script>
+  // Dynamic Logo Loader
+  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
+  if (settings) {
+    const logoContainer = document.getElementById('header-logo-container');
+    const logoText = document.getElementById('header-logo-text');
+    if (logoContainer && logoText) {
+      if (settings.logoType === 'image' && settings.logoUrl) {
+        logoText.style.display = 'none';
+        const img = document.createElement('img');
+        img.src = settings.logoUrl;
+        img.alt = 'Eastern Wave Creations';
+        img.style.height = '36px';
+        img.style.display = 'block';
+        logoContainer.appendChild(img);
+      }
+    }
+  }
+
   const mobileToggle = document.getElementById('mobile-toggle');
   const nav = document.querySelector('.nav');
 

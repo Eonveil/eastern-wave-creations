@@ -5,8 +5,10 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="logo">
-          <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
+        <a href="/" class="logo" id="footer-logo-container">
+          <span class="logo-text-wrapper" id="footer-logo-text">
+            <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
+          </span>
         </a>
         <p class="brand-tagline" id="footer-tagline">Engineering modern websites & intelligent WhatsApp communication pipelines.</p>
       </div>
@@ -165,6 +167,20 @@ const year = new Date().getFullYear();
     const complianceEl = document.getElementById('footer-compliance-text');
     if (complianceEl && settings.email) {
       complianceEl.innerHTML = `Official WhatsApp Business API integration for Eastern Wave Creations operates under the verified display name "Eastern Wave Creations" associated with contact channel: <a href="mailto:${settings.email}">${settings.email}</a>`;
+    }
+
+    const logoContainer = document.getElementById('footer-logo-container');
+    const logoText = document.getElementById('footer-logo-text');
+    if (logoContainer && logoText) {
+      if (settings.logoType === 'image' && settings.logoUrl) {
+        logoText.style.display = 'none';
+        const img = document.createElement('img');
+        img.src = settings.logoUrl;
+        img.alt = 'Eastern Wave Creations';
+        img.style.height = '32px';
+        img.style.display = 'block';
+        logoContainer.appendChild(img);
+      }
     }
   }
 </script>
