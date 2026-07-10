@@ -2,11 +2,15 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+
+const supabaseUrl = import.meta.env.SUPABASE_URL || '';
+const supabaseServiceRole = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
 ---
 
 <Layout title="Webmaster Console | Eastern Wave Creations">
   <Header />
   <main class="admin-container">
+    <div id="supabase-config" data-url={supabaseUrl} data-key={supabaseServiceRole} style="display: none;"></div>
     <div class="glass-panel admin-layout">
       <!-- Sidebar Navigation -->
       <aside class="admin-sidebar">
@@ -123,6 +127,17 @@ import Footer from '../components/Footer.astro';
                 <li><strong>Google Crawler:</strong> Allowed (via <code>/robots.txt</code>)</li>
               </ul>
             </div>
+            
+            <!-- Client Status Controls -->
+            <div class="system-card glass-panel">
+              <h3>Client controls: Serenity Escape</h3>
+              <ul class="system-details" style="gap: 12px; list-style: none; padding-left: 0;">
+                <li><strong>Supabase Schema:</strong> <code>serenity_escape</code> &bull; <span class="status-badge success">Connected</span></li>
+                <li><strong>Current Status:</strong> <span class="status-badge" id="client-site-status" style="background: rgba(197,168,128,0.1); color: var(--accent-cyan); border: 1px solid rgba(197,168,128,0.2); padding: 2px 8px; border-radius: 10px; font-weight: bold;">Fetching...</span></li>
+                <li><strong>Database Server:</strong> <code>xcqdbfdgwqfrxeabrtkg.supabase.co</code></li>
+              </ul>
+              <button class="btn-primary" id="toggle-killswitch-btn" style="margin-top: 20px; border: none; cursor: pointer; background: var(--accent-cyan); color: #000; padding: 10px 16px; border-radius: 8px; font-weight: bold; width: 100%; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.85';" onmouseout="this.style.opacity='1';">Toggle Site Status ⚡</button>
+            </div>
           </div>
         </div>
         
@@ -163,10 +178,17 @@ import Footer from '../components/Footer.astro';
 </Layout>
 
 <script>
+  import { createClient } from '@supabase/supabase-js';
+
   // Authorization Protection
   if (!localStorage.getItem('ewc_webmaster')) {
     window.location.href = '/webmaster-login';
   }
+
+  // Retrieve Supabase credentials passed from Astro server frontmatter
+  const configEl = document.getElementById('supabase-config');
+  const sbUrl = configEl ? configEl.getAttribute('data-url') : '';
+  const sbKey = configEl ? configEl.getAttribute('data-key') : '';
 
   // Seeding initial leads if empty
   const defaultLeads = [
@@ -190,48 +212,134 @@ import Footer from '../components/Footer.astro';
     localStorage.setItem('ewc_briefs', JSON.stringify(briefs));
   }
 
-  // Update lead count stat
-  const leadCountEl = document.getElementById('stat-leads-count');
-  if (leadCountEl) {
-    leadCountEl.textContent = briefs.length.toString();
-  }
+  // Initialize shared client-side logic
+  (async function initSupabase() {
+    let realBookings = [];
+    let supabase = null;
 
-  // Populate Dashboard Table
-  const dashboardTable = document.getElementById('dashboard-leads-list');
-  if (dashboardTable) {
-    dashboardTable.innerHTML = briefs.map(lead => `
-      <tr>
-        <td><strong>${lead.name}</strong></td>
-        <td>${lead.email}</td>
-        <td><span class="badge-service">${formatService(lead.service)}</span></td>
-        <td class="table-msg-cell">${lead.message}</td>
-      </tr>
-    `).join('');
-  }
+    if (sbUrl && sbKey) {
+      try {
+        supabase = createClient(sbUrl, sbKey, { db: { schema: 'serenity_escape' } });
 
-  // Populate Full Briefs Tab
-  const briefsFullList = document.getElementById('briefs-full-list');
-  if (briefsFullList) {
-    briefsFullList.innerHTML = briefs.map((lead, index) => `
-      <div class="brief-card glass-panel">
-        <div class="brief-header">
-          <div>
-            <h3>${lead.name}</h3>
-            <a href="mailto:${lead.email}">${lead.email}</a>
+        // 1. Fetch live client bookings
+        const { data: dbBookings, error: errBookings } = await supabase
+          .from('bookings')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (dbBookings && !errBookings) {
+          realBookings = dbBookings.map(b => ({
+            name: b.name,
+            email: b.email,
+            service: 'serenity-booking',
+            message: `${b.message} (Logged: ${new Date(b.created_at).toLocaleDateString()})`
+          }));
+        }
+
+        // 2. Fetch live site toggle status
+        const { data: configData } = await supabase
+          .from('system_config')
+          .select('value')
+          .eq('key', 'site_status');
+
+        if (configData && configData[0]) {
+          updateStatusBadge(configData[0].value);
+        }
+
+        // 3. Status Toggle Event Handler
+        const toggleBtn = document.getElementById('toggle-killswitch-btn');
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', async () => {
+            const currentBadge = document.getElementById('client-site-status');
+            const currentStatus = currentBadge ? currentBadge.textContent : 'active';
+            const nextStatus = currentStatus === 'active' ? 'maintenance' : 'active';
+
+            toggleBtn.disabled = true;
+            toggleBtn.textContent = 'Updating...';
+
+            const { error } = await supabase
+              .from('system_config')
+              .update({ value: nextStatus })
+              .eq('key', 'site_status');
+
+            if (!error) {
+              updateStatusBadge(nextStatus);
+            } else {
+              console.error("Status toggle error:", error);
+            }
+            toggleBtn.disabled = false;
+            toggleBtn.textContent = 'Toggle Site Status ⚡';
+          });
+        }
+
+      } catch (e) {
+        console.error("Supabase initialisation failed:", e);
+      }
+    }
+
+    // Combine local briefs with live Supabase client bookings
+    const allBriefs = [...realBookings, ...briefs];
+
+    // Update lead count stat
+    const leadCountEl = document.getElementById('stat-leads-count');
+    if (leadCountEl) {
+      leadCountEl.textContent = allBriefs.length.toString();
+    }
+
+    // Populate Dashboard Table
+    const dashboardTable = document.getElementById('dashboard-leads-list');
+    if (dashboardTable) {
+      dashboardTable.innerHTML = allBriefs.map(lead => `
+        <tr>
+          <td><strong>${lead.name}</strong></td>
+          <td>${lead.email}</td>
+          <td><span class="badge-service">${formatService(lead.service)}</span></td>
+          <td class="table-msg-cell">${lead.message}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Populate Full Briefs Tab
+    const briefsFullList = document.getElementById('briefs-full-list');
+    if (briefsFullList) {
+      briefsFullList.innerHTML = allBriefs.map((lead, index) => `
+        <div class="brief-card glass-panel">
+          <div class="brief-header">
+            <div>
+              <h3>${lead.name}</h3>
+              <a href="mailto:${lead.email}">${lead.email}</a>
+            </div>
+            <span class="badge-service">${formatService(lead.service)}</span>
           </div>
-          <span class="badge-service">${formatService(lead.service)}</span>
+          <div class="brief-body">
+            <p>${lead.message}</p>
+          </div>
         </div>
-        <div class="brief-body">
-          <p>${lead.message}</p>
-        </div>
-      </div>
-    `).join('');
+      `).join('');
+    }
+  })();
+
+  function updateStatusBadge(status) {
+    const badge = document.getElementById('client-site-status');
+    if (badge) {
+      badge.textContent = status;
+      if (status === 'active') {
+        badge.style.background = 'rgba(16, 185, 129, 0.1)';
+        badge.style.color = '#10b981';
+        badge.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+      } else {
+        badge.style.background = 'rgba(239, 68, 68, 0.1)';
+        badge.style.color = '#ef4444';
+        badge.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+      }
+    }
   }
 
   function formatService(srv: string) {
     if (srv === 'headless-website') return 'Headless Website';
     if (srv === 'whatsapp-automation') return 'WhatsApp Automation';
     if (srv === 'both') return 'Website & Automation';
+    if (srv === 'serenity-booking') return 'Serenity Booking 🏡';
     return 'Other Inquiry';
   }
 
