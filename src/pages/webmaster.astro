@@ -123,6 +123,8 @@ import Footer from '../components/Footer.astro';
                 <li><strong>Google Crawler:</strong> Allowed (via <code>/robots.txt</code>)</li>
               </ul>
             </div>
+
+
           </div>
         </div>
         
@@ -168,7 +170,7 @@ import Footer from '../components/Footer.astro';
     window.location.href = '/webmaster-login';
   }
 
-  // Seeding initial leads if empty
+  // Seeding initial local leads if empty
   const defaultLeads = [
     {
       name: "Sipho Khumalo",
@@ -228,7 +230,7 @@ import Footer from '../components/Footer.astro';
     `).join('');
   }
 
-  function formatService(srv: string) {
+  function formatService(srv) {
     if (srv === 'headless-website') return 'Headless Website';
     if (srv === 'whatsapp-automation') return 'WhatsApp Automation';
     if (srv === 'both') return 'Website & Automation';
