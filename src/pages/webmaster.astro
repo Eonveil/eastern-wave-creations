@@ -42,6 +42,10 @@ const supabaseServiceRole = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             Business Profile
           </button>
+          <button class="nav-item" data-tab="logs">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 6v6l4 2"></path></svg>
+            Watchtower Logs
+          </button>
           <button class="logout-btn" id="logout-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             Sign Out
@@ -171,6 +175,35 @@ const supabaseServiceRole = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
             <div id="save-success-msg" style="display: none; color: var(--accent-whatsapp); font-size: 0.95rem; font-weight: 600; margin-top: 16px;">Profile details saved successfully! Refresh the public pages to see changes.</div>
           </div>
         </div>
+        
+        <!-- Tab: Watchtower Logs -->
+        <div class="tab-pane" id="tab-logs">
+          <h2 class="pane-title">Watchtower Observability Logs</h2>
+          <p class="pane-desc">Headless system logs and observability records tracked dynamically from client applications.</p>
+          
+          <div class="dashboard-table-box glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h3>Live Error & Performance Logs</h3>
+              <button class="btn-primary" id="clear-logs-btn" style="border: none; cursor: pointer; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; background: #ef4444; color: #fff;">Clear System Logs 🗑️</button>
+            </div>
+            
+            <div class="table-container">
+              <table class="leads-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Severity</th>
+                    <th>Source Component</th>
+                    <th>Error Details</th>
+                  </tr>
+                </thead>
+                <tbody id="logs-list">
+                  <tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">Loading logs...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   </main>
@@ -236,7 +269,60 @@ const supabaseServiceRole = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
           }));
         }
 
-        // 2. Fetch live site toggle status
+        // 2. Fetch system logs from Supabase
+        const { data: dbLogs, error: errLogs } = await supabase
+          .from('system_logs')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        const logsList = document.getElementById('logs-list');
+        if (logsList) {
+          if (dbLogs && dbLogs.length > 0) {
+            logsList.innerHTML = dbLogs.map(log => {
+              const severityColor = log.severity === 'fatal' ? '#ef4444' : '#eab308';
+              const severityBg = log.severity === 'fatal' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(234, 179, 8, 0.1)';
+              const severityBorder = log.severity === 'fatal' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(234, 179, 8, 0.2)';
+              return `
+                <tr>
+                  <td><span style="color: var(--text-muted); font-size: 0.8rem;">${new Date(log.created_at).toLocaleString()}</span></td>
+                  <td><span class="status-badge" style="background: ${severityBg}; color: ${severityColor}; border: 1px solid ${severityBorder}; padding: 2px 8px; border-radius: 10px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase;">${log.severity}</span></td>
+                  <td><code>${log.source}</code></td>
+                  <td><strong style="color: #ffffff; display: block; margin-bottom: 4px;">${log.message}</strong>${log.stack_trace ? `<pre style="margin: 8px 0 0 0; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; font-size: 0.75rem; overflow-x: auto; color: #ef4444; border: 1px solid rgba(239,68,68,0.1);">${log.stack_trace}</pre>` : ''}</td>
+                </tr>
+              `;
+            }).join('');
+          } else {
+            logsList.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">No system logs found.</td></tr>`;
+          }
+        }
+
+        // 3. Clear System Logs Handler
+        const clearBtn = document.getElementById('clear-logs-btn');
+        if (clearBtn) {
+          clearBtn.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to delete all system logs?')) {
+              clearBtn.disabled = true;
+              clearBtn.textContent = 'Clearing...';
+              
+              const { error } = await supabase
+                .from('system_logs')
+                .delete()
+                .neq('severity', 'none');
+                
+              if (!error) {
+                if (logsList) {
+                  logsList.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">No system logs found.</td></tr>`;
+                }
+              } else {
+                console.error("Failed to delete logs:", error);
+              }
+              clearBtn.disabled = false;
+              clearBtn.textContent = 'Clear System Logs 🗑️';
+            }
+          });
+        }
+
+        // 4. Fetch live site toggle status
         const { data: configData } = await supabase
           .from('system_config')
           .select('value')
