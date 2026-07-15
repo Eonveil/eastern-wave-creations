@@ -183,6 +183,28 @@ const year = new Date().getFullYear();
   }
 </style>
 
-<script>
-  // Dynamic profile details are pre-rendered at build time from Supabase
+<script define:vars={{ supabaseUrl, supabaseAnonKey }}>
+  (async () => {
+    if (!supabaseUrl || !supabaseAnonKey) return;
+    try {
+      const res = await fetch(`${supabaseUrl}/rest/v1/vault_config?id=eq.1`, {
+        headers: {
+          'apikey': supabaseAnonKey,
+          'Accept-Profile': 'ewc_secure'
+        }
+      });
+      const data = await res.json();
+      if (data && data[0]) {
+        const settings = data[0];
+        const taglineEl = document.getElementById('footer-tagline');
+        const complianceEl = document.getElementById('footer-compliance-text');
+        if (settings.tagline && taglineEl) taglineEl.textContent = settings.tagline;
+        if (settings.email && complianceEl) {
+          complianceEl.innerHTML = `Official WhatsApp Business API integration for Eastern Wave Creations operates under the verified display name "Eastern Wave Creations" associated with contact channel: <a href="mailto:${settings.email}">${settings.email}</a>`;
+        }
+      }
+    } catch (e) {
+      console.error("Client-side footer settings fetch failed:", e);
+    }
+  })();
 </script>

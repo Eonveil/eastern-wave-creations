@@ -207,6 +207,24 @@ if (supabaseUrl && supabaseAnonKey) {
   }
 </style>
 
-<script>
-  // Dynamic profile details are pre-rendered at build time from Supabase
+<script define:vars={{ supabaseUrl, supabaseAnonKey }}>
+  (async () => {
+    if (!supabaseUrl || !supabaseAnonKey) return;
+    try {
+      const res = await fetch(`${supabaseUrl}/rest/v1/vault_config?id=eq.1`, {
+        headers: {
+          'apikey': supabaseAnonKey,
+          'Accept-Profile': 'ewc_secure'
+        }
+      });
+      const data = await res.json();
+      if (data && data[0]) {
+        const settings = data[0];
+        const emailEl = document.getElementById('privacy-email-text');
+        if (settings.email && emailEl) emailEl.textContent = settings.email;
+      }
+    } catch (e) {
+      console.error("Client-side privacy settings fetch failed:", e);
+    }
+  })();
 </script>
