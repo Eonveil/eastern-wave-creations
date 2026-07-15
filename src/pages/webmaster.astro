@@ -3,8 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
-const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL || import.meta.env.SUPABASE_URL || '';
-const supabaseServiceRole = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabaseUrl = process.env.SUPABASE_DATABASE_URL || import.meta.env.SUPABASE_DATABASE_URL || process.env.SUPABASE_URL || import.meta.env.SUPABASE_URL || '';
+const supabaseServiceRole = process.env.SUPABASE_SERVICE_ROLE_KEY || import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
 ---
 
 <Layout title="Webmaster Console | Eastern Wave Creations">
