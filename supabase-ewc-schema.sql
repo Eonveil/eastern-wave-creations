@@ -24,11 +24,32 @@ CREATE TABLE IF NOT EXISTS ewc_secure.console_auth (
     CONSTRAINT single_user CHECK (id = 1)
 );
 
--- 4. Enable Row Level Security (RLS)
+-- 4. Create the client briefs table to save inquiries
+CREATE TABLE IF NOT EXISTS ewc_secure.client_briefs (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    service TEXT NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 5. Enable Row Level Security (RLS)
 ALTER TABLE ewc_secure.vault_config ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ewc_secure.console_auth ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ewc_secure.client_briefs ENABLE ROW LEVEL SECURITY;
 
--- 5. Create RLS Policies
+-- 6. Grant Schema Usage and Permissions
+GRANT USAGE ON SCHEMA ewc_secure TO anon, authenticated, service_role;
+
+GRANT SELECT ON ewc_secure.console_auth TO anon, authenticated;
+GRANT SELECT ON ewc_secure.vault_config TO anon, authenticated;
+GRANT SELECT, INSERT ON ewc_secure.client_briefs TO anon, authenticated;
+
+GRANT ALL ON ALL TABLES IN SCHEMA ewc_secure TO service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA ewc_secure TO service_role;
+
+-- 7. Create RLS Policies
 -- Allow public select (read) on settings
 DROP POLICY IF EXISTS "Allow public read access to settings" ON ewc_secure.vault_config;
 CREATE POLICY "Allow public read access to settings" 
@@ -36,23 +57,31 @@ ON ewc_secure.vault_config
 FOR SELECT 
 USING (true);
 
--- Allow service role to perform all actions on settings
+-- Allow public select on auth for login script
+DROP POLICY IF EXISTS "Allow select for console login" ON ewc_secure.console_auth;
+CREATE POLICY "Allow select for console login"
+ON ewc_secure.console_auth
+FOR SELECT
+TO anon
+USING (true);
+
+-- Allow public inserts on briefs (so website form can submit)
+DROP POLICY IF EXISTS "Allow public inserts" ON ewc_secure.client_briefs;
+CREATE POLICY "Allow public inserts" 
+ON ewc_secure.client_briefs 
+FOR INSERT 
+TO anon, authenticated
+WITH CHECK (true);
+
+-- Allow service role to perform all actions
 DROP POLICY IF EXISTS "Allow service role to manage settings" ON ewc_secure.vault_config;
-CREATE POLICY "Allow service role to manage settings" 
-ON ewc_secure.vault_config 
-FOR ALL 
-USING (true) 
-WITH CHECK (true);
+CREATE POLICY "Allow service role to manage settings" ON ewc_secure.vault_config FOR ALL USING (true) WITH CHECK (true);
 
--- Allow service role to perform all actions on auth table
 DROP POLICY IF EXISTS "Allow service role to manage auth" ON ewc_secure.console_auth;
-CREATE POLICY "Allow service role to manage auth" 
-ON ewc_secure.console_auth 
-FOR ALL 
-USING (true) 
-WITH CHECK (true);
+CREATE POLICY "Allow service role to manage auth" ON ewc_secure.console_auth FOR ALL USING (true) WITH CHECK (true);
 
--- 6. Seed initial values
+
+-- 8. Seed initial values
 -- Seed default profile settings
 INSERT INTO ewc_secure.vault_config (id, email, phone, tagline)
 VALUES (
@@ -77,25 +106,3 @@ VALUES (
 ON CONFLICT (id) DO UPDATE 
 SET email = EXCLUDED.email, 
     password_hash = EXCLUDED.password_hash;
-
-
--- ============================================================================
--- SQL Statements to update values manually
--- Use these manually inside the SQL Editor to update credentials or site details.
--- ============================================================================
-
-/*
--- Example: Update settings manually
-UPDATE ewc_secure.vault_config
-SET email = 'info@easternwavecreations.co.za',
-    phone = 'Text hello to +27...',
-    tagline = 'Engineering next-generation headless websites and automated pipelines.',
-    updated_at = CURRENT_TIMESTAMP
-WHERE id = 1;
-
--- Example: Update Webmaster Console Credentials manually
-UPDATE ewc_secure.console_auth
-SET email = 'webmaster@gmail.com',
-    password_hash = 'webmaster123'
-WHERE id = 1;
-*/
