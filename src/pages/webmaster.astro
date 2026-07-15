@@ -408,6 +408,7 @@ const supabaseServiceRole = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
               console.error("Failed to save settings to Supabase:", saveErr);
             }
           });
+        }
         // 6. Fetch live client briefs from ewc_secure.client_briefs
         const { data: dbBriefs, error: errBriefs } = await ewcSupabase
           .from('client_briefs')
