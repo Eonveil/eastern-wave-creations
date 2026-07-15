@@ -2,11 +2,15 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+
+const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL || import.meta.env.SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || '';
 ---
 
 <Layout title="Webmaster Console Login | Eastern Wave Creations">
   <Header />
   <main class="login-container">
+    <div id="supabase-config" data-url={supabaseUrl} data-key={supabaseAnonKey} style="display: none;"></div>
     <div class="glass-panel login-card">
       <div class="login-logo">
         <svg viewBox="0 0 100 100" class="logo-icon">
@@ -37,22 +41,58 @@ import Footer from '../components/Footer.astro';
 </Layout>
 
 <script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const configEl = document.getElementById('supabase-config');
+  const sbUrl = configEl ? configEl.getAttribute('data-url') : '';
+  const sbKey = configEl ? configEl.getAttribute('data-key') : '';
+
   const form = document.getElementById('webmaster-login-form');
   const errorMsg = document.getElementById('error-msg');
 
-  if (form && errorMsg) {
-    form.addEventListener('submit', (e) => {
+  if (form && errorMsg && sbUrl && sbKey) {
+    const supabase = createClient(sbUrl, sbKey, { db: { schema: 'ewc_secure' } });
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = (document.getElementById('w-email') as HTMLInputElement).value;
       const pass = (document.getElementById('w-pass') as HTMLInputElement).value;
 
-      if (email === 'webmaster@gmail.com' && pass === 'webmaster123') {
-        localStorage.setItem('ewc_webmaster', 'active');
-        window.location.href = '/webmaster';
-      } else {
+      try {
+        const { data, error } = await supabase
+          .from('console_auth')
+          .select('*')
+          .eq('email', email)
+          .eq('password_hash', pass)
+          .single();
+
+        if (data && !error) {
+          localStorage.setItem('ewc_webmaster', 'active');
+          window.location.href = '/webmaster';
+        } else {
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        console.error("Auth query failed:", err);
         errorMsg.style.display = 'block';
       }
     });
+  } else {
+    // Local / development fallback if Supabase env vars are not set
+    if (form && errorMsg) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = (document.getElementById('w-email') as HTMLInputElement).value;
+        const pass = (document.getElementById('w-pass') as HTMLInputElement).value;
+
+        if (email === 'webmaster@gmail.com' && pass === 'webmaster123') {
+          localStorage.setItem('ewc_webmaster', 'active');
+          window.location.href = '/webmaster';
+        } else {
+          errorMsg.style.display = 'block';
+        }
+      });
+    }
   }
 </script>
 

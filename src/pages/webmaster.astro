@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
-const supabaseUrl = import.meta.env.SUPABASE_URL || '';
+const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL || import.meta.env.SUPABASE_URL || '';
 const supabaseServiceRole = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
 ---
 
@@ -358,6 +358,58 @@ const supabaseServiceRole = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
           });
         }
 
+        // 5. Fetch profile settings from Supabase
+        const ewcSupabase = createClient(sbUrl, sbKey, { db: { schema: 'ewc_secure' } });
+        const { data: dbSettings, error: errSettings } = await ewcSupabase
+          .from('vault_config')
+          .select('*')
+          .eq('id', 1)
+          .single();
+
+        if (dbSettings && !errSettings) {
+          if (pEmail) pEmail.value = dbSettings.email;
+          if (pPhone) pPhone.value = dbSettings.phone;
+          if (pTagline) pTagline.value = dbSettings.tagline;
+          settingsLoaded = true;
+        }
+
+        // Save settings handler for Supabase
+        if (settingsForm && saveSuccessMsg && pEmail && pPhone && pTagline) {
+          settingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = settingsForm.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+            if (submitBtn) {
+              submitBtn.disabled = true;
+              submitBtn.textContent = 'Saving...';
+            }
+
+            const updatedSettings = {
+              email: pEmail.value,
+              phone: pPhone.value,
+              tagline: pTagline.value
+            };
+
+            const { error: saveErr } = await ewcSupabase
+              .from('vault_config')
+              .update(updatedSettings)
+              .eq('id', 1);
+
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Save Profile Changes';
+            }
+
+            if (!saveErr) {
+              saveSuccessMsg.style.display = 'block';
+              setTimeout(() => {
+                if (saveSuccessMsg) saveSuccessMsg.style.display = 'none';
+              }, 3000);
+            } else {
+              console.error("Failed to save settings to Supabase:", saveErr);
+            }
+          });
+        }
+
       } catch (e) {
         console.error("Supabase initialisation failed:", e);
       }
@@ -451,42 +503,47 @@ const supabaseServiceRole = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
     tagline: "Engineering modern websites & intelligent WhatsApp communication pipelines."
   };
 
-  const settingsForm = document.getElementById('profile-settings-form');
+  const settingsForm = document.getElementById('profile-settings-form') as HTMLFormElement | null;
   const saveSuccessMsg = document.getElementById('save-success-msg');
-
-  // Load existing settings
-  let settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
-  if (!settings) {
-    settings = defaultSettings;
-    localStorage.setItem('ewc_settings', JSON.stringify(settings));
-  }
-
   const pEmail = document.getElementById('p-email') as HTMLInputElement | null;
   const pPhone = document.getElementById('p-phone') as HTMLInputElement | null;
   const pTagline = document.getElementById('p-tagline') as HTMLTextAreaElement | null;
 
-  if (pEmail && pPhone && pTagline) {
-    pEmail.value = settings.email;
-    pPhone.value = settings.phone;
-    pTagline.value = settings.tagline;
-  }
+  let settingsLoaded = false;
 
-  if (settingsForm && saveSuccessMsg && pEmail && pPhone && pTagline) {
-    settingsForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const updatedSettings = {
-        email: pEmail.value,
-        phone: pPhone.value,
-        tagline: pTagline.value
-      };
-      localStorage.setItem('ewc_settings', JSON.stringify(updatedSettings));
-      
-      saveSuccessMsg.style.display = 'block';
-      setTimeout(() => {
-        saveSuccessMsg.style.display = 'none';
-      }, 3000);
-    });
-  }
+  // Fallback to LocalStorage if Supabase settings didn't load (offline/local development)
+  setTimeout(() => {
+    if (!settingsLoaded) {
+      let localSettings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
+      if (!localSettings) {
+        localSettings = defaultSettings;
+        localStorage.setItem('ewc_settings', JSON.stringify(localSettings));
+      }
+
+      if (pEmail && pPhone && pTagline) {
+        pEmail.value = localSettings.email;
+        pPhone.value = localSettings.phone;
+        pTagline.value = localSettings.tagline;
+      }
+
+      if (settingsForm && saveSuccessMsg && pEmail && pPhone && pTagline) {
+        settingsForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const updatedSettings = {
+            email: pEmail.value,
+            phone: pPhone.value,
+            tagline: pTagline.value
+          };
+          localStorage.setItem('ewc_settings', JSON.stringify(updatedSettings));
+          
+          saveSuccessMsg.style.display = 'block';
+          setTimeout(() => {
+            if (saveSuccessMsg) saveSuccessMsg.style.display = 'none';
+          }, 3000);
+        });
+      }
+    }
+  }, 1000);
 
   // Logout
   document.getElementById('logout-btn')?.addEventListener('click', () => {

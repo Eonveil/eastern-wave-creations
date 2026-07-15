@@ -1,4 +1,30 @@
 ---
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL || import.meta.env.SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || '';
+
+let settings = {
+  email: "info@easternwavecreations.co.za",
+  phone: "Text 'hello' to test our live flow"
+};
+
+if (supabaseUrl && supabaseAnonKey) {
+  try {
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, { db: { schema: 'ewc_secure' } });
+    const { data, error } = await supabase
+      .from('vault_config')
+      .select('email, phone')
+      .eq('id', 1)
+      .single();
+    if (data && !error) {
+      settings.email = data.email;
+      settings.phone = data.phone;
+    }
+  } catch (e) {
+    console.error("Failed to load settings in Contact.astro:", e);
+  }
+}
 ---
 <section class="contact" id="contact">
   <div class="container">
@@ -16,7 +42,7 @@
             </span>
             <div>
               <h4>Email us directly</h4>
-              <p id="contact-email-text">info@easternwavecreations.co.za</p>
+              <p id="contact-email-text">{settings.email}</p>
             </div>
           </div>
           
@@ -26,7 +52,7 @@
             </span>
             <div>
               <h4>WhatsApp Chatbot Demo</h4>
-              <p id="contact-whatsapp-text">Text "hello" to test our live flow</p>
+              <p id="contact-whatsapp-text">{settings.phone}</p>
             </div>
           </div>
         </div>
@@ -80,14 +106,7 @@
 </section>
 
 <script>
-  // Load dynamic profile details
-  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
-  if (settings) {
-    const emailEl = document.getElementById('contact-email-text');
-    const waEl = document.getElementById('contact-whatsapp-text');
-    if (settings.email && emailEl) emailEl.textContent = settings.email;
-    if (settings.phone && waEl) waEl.textContent = settings.phone;
-  }
+  // Dynamic profile details are pre-rendered at build time from Supabase
 
   const form = document.getElementById('eastern-contact-form') as HTMLFormElement | null;
   const formPanel = document.getElementById('form-panel');

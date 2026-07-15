@@ -1,4 +1,31 @@
 ---
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL || import.meta.env.SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || '';
+
+let settings = {
+  email: "info@easternwavecreations.co.za",
+  tagline: "Engineering modern websites & intelligent WhatsApp communication pipelines."
+};
+
+if (supabaseUrl && supabaseAnonKey) {
+  try {
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, { db: { schema: 'ewc_secure' } });
+    const { data, error } = await supabase
+      .from('vault_config')
+      .select('email, tagline')
+      .eq('id', 1)
+      .single();
+    if (data && !error) {
+      settings.email = data.email;
+      settings.tagline = data.tagline;
+    }
+  } catch (e) {
+    console.error("Failed to load settings in Footer.astro:", e);
+  }
+}
+
 const year = new Date().getFullYear();
 ---
 <footer class="footer">
@@ -8,7 +35,7 @@ const year = new Date().getFullYear();
         <a href="/" class="logo">
           <span class="logo-wave">Eastern</span> Wave <span class="logo-accent">Creations</span>
         </a>
-        <p class="brand-tagline" id="footer-tagline">Engineering modern websites & intelligent WhatsApp communication pipelines.</p>
+        <p class="brand-tagline" id="footer-tagline">{settings.tagline}</p>
       </div>
       
       <div class="footer-links">
@@ -35,7 +62,7 @@ const year = new Date().getFullYear();
       <p class="built-with">Built headless with Astro &bull; Blazing Speed</p>
     </div>
     <div class="footer-compliance">
-      <p id="footer-compliance-text">Official WhatsApp Business API integration for Eastern Wave Creations operates under the verified display name "Eastern Wave Creations" associated with contact channel: info@easternwavecreations.co.za</p>
+      <p id="footer-compliance-text">Official WhatsApp Business API integration for Eastern Wave Creations operates under the verified display name "Eastern Wave Creations" associated with contact channel: <a href={`mailto:${settings.email}`}>{settings.email}</a></p>
     </div>
   </div>
 </footer>
@@ -157,15 +184,5 @@ const year = new Date().getFullYear();
 </style>
 
 <script>
-  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
-  
-  if (settings) {
-    const taglineEl = document.getElementById('footer-tagline');
-    if (taglineEl && settings.tagline) taglineEl.textContent = settings.tagline;
-    
-    const complianceEl = document.getElementById('footer-compliance-text');
-    if (complianceEl && settings.email) {
-      complianceEl.innerHTML = `Official WhatsApp Business API integration for Eastern Wave Creations operates under the verified display name "Eastern Wave Creations" associated with contact channel: <a href="mailto:${settings.email}">${settings.email}</a>`;
-    }
-  }
+  // Dynamic profile details are pre-rendered at build time from Supabase
 </script>

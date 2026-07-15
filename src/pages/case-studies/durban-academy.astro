@@ -2,6 +2,30 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL || import.meta.env.SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || '';
+
+let settings = {
+  email: "info@easternwavecreations.co.za"
+};
+
+if (supabaseUrl && supabaseAnonKey) {
+  try {
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, { db: { schema: 'ewc_secure' } });
+    const { data, error } = await supabase
+      .from('vault_config')
+      .select('email')
+      .eq('id', 1)
+      .single();
+    if (data && !error) {
+      settings.email = data.email;
+    }
+  } catch (e) {
+    console.error("Failed to load settings in durban-academy.astro:", e);
+  }
+}
 ---
 
 <Layout title="Durban Academy Pilot Case Study | Eastern Wave Creations" description="Case study detailing Eastern Wave Creations' upcoming 3rd term headless website and WhatsApp automation pilot at Durban Academy High School.">
@@ -88,7 +112,7 @@ import Footer from '../../components/Footer.astro';
             </tr>
             <tr>
               <td><strong>Official Contact Channel:</strong></td>
-              <td><span id="case-email-text">info@easternwavecreations.co.za</span></td>
+              <td><span id="case-email-text">{settings.email}</span></td>
             </tr>
           </table>
         </div>
@@ -289,9 +313,5 @@ import Footer from '../../components/Footer.astro';
 </style>
 
 <script>
-  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
-  if (settings && settings.email) {
-    const emailEl = document.getElementById('case-email-text');
-    if (emailEl) emailEl.textContent = settings.email;
-  }
+  // Dynamic profile details are pre-rendered at build time from Supabase
 </script>

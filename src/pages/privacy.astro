@@ -2,6 +2,30 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.SUPABASE_DATABASE_URL || import.meta.env.SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY || '';
+
+let settings = {
+  email: "info@easternwavecreations.co.za"
+};
+
+if (supabaseUrl && supabaseAnonKey) {
+  try {
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, { db: { schema: 'ewc_secure' } });
+    const { data, error } = await supabase
+      .from('vault_config')
+      .select('email')
+      .eq('id', 1)
+      .single();
+    if (data && !error) {
+      settings.email = data.email;
+    }
+  } catch (e) {
+    console.error("Failed to load settings in privacy.astro:", e);
+  }
+}
 ---
 
 <Layout title="Privacy Policy | Eastern Wave Creations" description="Privacy Policy for Eastern Wave Creations, detailing compliance with POPIA, GDPR, and Meta (Facebook Pixel) data policies.">
@@ -90,7 +114,7 @@ import Footer from '../components/Footer.astro';
       <section class="privacy-section">
         <h2>8. Contact Us</h2>
         <p>If you have questions or comments about this Privacy Policy, please contact us at:</p>
-        <p class="contact-email"><strong>Email:</strong> <span id="privacy-email-text">info@easternwavecreations.co.za</span></p>
+        <p class="contact-email"><strong>Email:</strong> <span id="privacy-email-text">{settings.email}</span></p>
       </section>
     </div>
   </main>
@@ -184,9 +208,5 @@ import Footer from '../components/Footer.astro';
 </style>
 
 <script>
-  const settings = JSON.parse(localStorage.getItem('ewc_settings') || 'null');
-  if (settings && settings.email) {
-    const emailEl = document.getElementById('privacy-email-text');
-    if (emailEl) emailEl.textContent = settings.email;
-  }
+  // Dynamic profile details are pre-rendered at build time from Supabase
 </script>
