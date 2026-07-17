@@ -5,16 +5,19 @@ import Footer from '../components/Footer.astro';
 
 const getSupabaseUrl = () => {
   const url = process.env.SUPABASE_URL || import.meta.env.SUPABASE_URL || process.env.SUPABASE_DATABASE_URL || import.meta.env.SUPABASE_DATABASE_URL || '';
-  return url.startsWith('http') ? url : '';
+  if (url.startsWith('http')) return url;
+  const match = url.match(/db\.(.*?)\.supabase\.(co|net)/);
+  if (match && match[1]) return `https://${match[1]}.supabase.co`;
+  return '';
 };
 const supabaseUrl = getSupabaseUrl();
-const supabaseServiceRole = process.env.SUPABASE_SERVICE_ROLE_KEY || import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY || '';
 ---
 
 <Layout title="Webmaster Console | Eastern Wave Creations">
   <Header />
   <main class="admin-container">
-    <div id="supabase-config" data-url={supabaseUrl} data-key={supabaseServiceRole} style="display: none;"></div>
+    <div id="supabase-config" data-url={supabaseUrl} data-key={supabaseAnonKey} style="display: none;"></div>
     <div class="glass-panel admin-layout">
       <!-- Sidebar Navigation -->
       <aside class="admin-sidebar">

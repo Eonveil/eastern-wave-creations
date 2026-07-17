@@ -6,7 +6,10 @@ import { createClient } from '@supabase/supabase-js';
 
 const getSupabaseUrl = () => {
   const url = process.env.SUPABASE_URL || import.meta.env.SUPABASE_URL || process.env.SUPABASE_DATABASE_URL || import.meta.env.SUPABASE_DATABASE_URL || '';
-  return url.startsWith('http') ? url : '';
+  if (url.startsWith('http')) return url;
+  const match = url.match(/db\.(.*?)\.supabase\.(co|net)/);
+  if (match && match[1]) return `https://${match[1]}.supabase.co`;
+  return '';
 };
 const supabaseUrl = getSupabaseUrl();
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY || '';
@@ -323,6 +326,7 @@ if (supabaseUrl && supabaseAnonKey) {
       const res = await fetch(`${supabaseUrl}/rest/v1/vault_config?id=eq.1`, {
         headers: {
           'apikey': supabaseAnonKey,
+          'Authorization': `Bearer ${supabaseAnonKey}`,
           'Accept-Profile': 'ewc_secure'
         }
       });

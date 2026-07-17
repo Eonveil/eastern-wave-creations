@@ -40,14 +40,15 @@ ALTER TABLE ewc_secure.console_auth ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ewc_secure.client_briefs ENABLE ROW LEVEL SECURITY;
 
 -- 6. Grant Schema Usage and Permissions
-GRANT USAGE ON SCHEMA ewc_secure TO anon, authenticated, service_role;
+GRANT USAGE ON SCHEMA ewc_secure TO anon, authenticated, service_role, authenticator;
 
+GRANT SELECT, UPDATE ON ewc_secure.vault_config TO anon, authenticated;
 GRANT SELECT ON ewc_secure.console_auth TO anon, authenticated;
-GRANT SELECT ON ewc_secure.vault_config TO anon, authenticated;
 GRANT SELECT, INSERT ON ewc_secure.client_briefs TO anon, authenticated;
+GRANT USAGE, SELECT ON SEQUENCE ewc_secure.client_briefs_id_seq TO anon, authenticated;
 
-GRANT ALL ON ALL TABLES IN SCHEMA ewc_secure TO service_role;
-GRANT ALL ON ALL SEQUENCES IN SCHEMA ewc_secure TO service_role;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA ewc_secure TO postgres, service_role;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA ewc_secure TO postgres, service_role;
 
 -- 7. Create RLS Policies
 -- Allow public select (read) on settings
@@ -56,6 +57,15 @@ CREATE POLICY "Allow public read access to settings"
 ON ewc_secure.vault_config 
 FOR SELECT 
 USING (true);
+
+-- Allow public update settings (so Console using Anon Key can edit them)
+DROP POLICY IF EXISTS "Allow public update settings" ON ewc_secure.vault_config;
+CREATE POLICY "Allow public update settings"
+ON ewc_secure.vault_config
+FOR UPDATE
+TO anon, authenticated
+USING (id = 1)
+WITH CHECK (id = 1);
 
 -- Allow public select on auth for login script
 DROP POLICY IF EXISTS "Allow select for console login" ON ewc_secure.console_auth;
